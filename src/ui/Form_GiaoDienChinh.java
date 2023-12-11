@@ -338,7 +338,16 @@ public class Form_GiaoDienChinh extends JFrame implements MouseListener, ActionL
             //setVisible(false);
             Form_DangKy form_dangKy = new Form_DangKy(pnCneter);
             form_dangKy.setVisible(true);
-        }else if(e.getSource().equals(Admin)) {
+        }
+
+        else if(e.getSource().equals(mnDoiMatKhau)) {
+            System.out.println("DoiMatKhau Selected!");
+            setVisible(false);
+            Form_DoiMatKhau admin = new Form_DoiMatKhau(this.taiKhoan,pnCneter);
+            admin.setVisible(true);
+        }
+
+else if(e.getSource().equals(Admin)) {
             System.out.println("heso Selected!");
             setVisible(false);
             Form_Admin admin = new Form_Admin();
@@ -346,6 +355,7 @@ public class Form_GiaoDienChinh extends JFrame implements MouseListener, ActionL
             pnCneter.add(admin);
             validate();
         }
+
             else if(e.getSource().equals(mnDangXuat)) {
             System.out.println("Menu Dang Xuat Selected!");
             setVisible(false);

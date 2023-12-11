@@ -44,6 +44,21 @@ public class TaiKhoan_Dao {
 
         return ds;
     }
+    
+     public boolean doiMKTaiKhoan(TaiKhoan taiKhoan) {
+        try {
+            PreparedStatement nvAdd = con.prepareStatement("UPDATE TAIKHOAN SET MATKHAU = ? WHERE TENDN =  ?");
+            nvAdd.setString(1, taiKhoan.getTenDN());
+            nvAdd.setString(2, taiKhoan.getMatKhau());
+            int n = nvAdd.executeUpdate();
+            if (n > 0)
+                return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
     public boolean addTaiKhoan(TaiKhoan taiKhoan) {
         try {
