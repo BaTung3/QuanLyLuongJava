@@ -543,3 +543,10 @@ VALUES
   ALTER TABLE ChamCongNhanVien
 ADD LUONG float;
 
+ALTER TABLE NhanVien
+ALTER COLUMN CMND Long;
+
+ALTER TABLE HeSoLuong
+ADD CHUCVU nvarchar(25);
+
+select L.* from LuongNhanVien as L,NhanVien as N where L.MANV = N.MANV and N.MAHSL ='HSL002'

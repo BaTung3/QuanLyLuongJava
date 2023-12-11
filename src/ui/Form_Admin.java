@@ -1,6 +1,5 @@
 package ui;
 
-import application.RunApplication;
 import com.toedter.calendar.JDateChooser;
 import dao.HeSoLuong_Dao;
 import dao.NhanVienHanhChinh_Dao;
@@ -25,7 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Form_NhanVienHanhChinh extends JPanel {
+public class Form_Admin extends JPanel {
     /**
      *
      */
@@ -36,7 +35,7 @@ public class Form_NhanVienHanhChinh extends JPanel {
     JComboBox<String> cbcGT, cbcPhongBan, cbcHeSoLuong;
     JDateChooser namSinh, NgayVao;
 
-    public Form_NhanVienHanhChinh() {
+    public Form_Admin() {
         doShow();
     }
 
@@ -201,10 +200,7 @@ public class Form_NhanVienHanhChinh extends JPanel {
                     txtLuongCB.setText(table.getValueAt(r, 7).toString());
                     txtPhuCap.setText(table.getValueAt(r, 8).toString());
                     cbcPhongBan.setSelectedItem(table.getValueAt(r, 9).toString());
-                    
-                    
-                    
-                    cbcHeSoLuong.setSelectedItem(RunApplication.HesoluongToChucvu(Double.parseDouble(table.getValueAt(r,10).toString())));
+                    cbcHeSoLuong.setSelectedItem(table.getValueAt(r,10).toString());
                 }
             }
 
@@ -261,7 +257,7 @@ public class Form_NhanVienHanhChinh extends JPanel {
                                     txtSDT.getText().trim(),
                                     txtDiaChi.getText(),
                                     txtPhuCap.getText().trim().isEmpty() ? 0 : Double.parseDouble(txtPhuCap.getText().trim()));
-                            HeSoLuong heSoLuong = heSoLuong_dao.TimKiemHeSo((RunApplication.ChucvuToHesoluong(cbcHeSoLuong.getSelectedItem().toString().trim())));
+                            HeSoLuong heSoLuong = heSoLuong_dao.TimKiemHeSo(Double.parseDouble(cbcHeSoLuong.getSelectedItem().toString().trim()));
                             Phongban phongban = phongBan_dao.TimKiemTen(cbcPhongBan.getSelectedItem().toString().trim());
                             if (heSoLuong != null && phongban != null) {
                                 nv.setHeSoLuong(heSoLuong);
@@ -346,7 +342,7 @@ public class Form_NhanVienHanhChinh extends JPanel {
                             txtSDT.getText().trim(),
                             txtDiaChi.getText(),
                             Double.parseDouble(txtPhuCap.getText().trim()));
-                    HeSoLuong heSoLuong = heSoLuong_dao.TimKiemHeSo(RunApplication.ChucvuToHesoluong(cbcHeSoLuong.getSelectedItem().toString().trim()));
+                    HeSoLuong heSoLuong = heSoLuong_dao.TimKiemHeSo(Double.parseDouble(cbcHeSoLuong.getSelectedItem().toString().trim()));
                     Phongban phongban = phongBan_dao.TimKiemTen(cbcPhongBan.getSelectedItem().toString().trim());
                     nv.setHeSoLuong(heSoLuong);
                     nv.setPhongban(phongban);

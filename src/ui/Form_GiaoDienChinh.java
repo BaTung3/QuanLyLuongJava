@@ -19,7 +19,7 @@ public class Form_GiaoDienChinh extends JFrame implements MouseListener, ActionL
     JPanel pnCneter;
    
     JMenu mnTrangChu, mnThoat;
-    JMenuItem Taotaikhoan,Heso;
+    JMenuItem Taotaikhoan,Admin;
     JMenuItem mnChamCong, mnTinhLuong;
     JMenuItem mnCongDoan;
     JMenuItem mnPhanCong,mnChamCongCN,mnTinhLuongCN;
@@ -73,9 +73,9 @@ public class Form_GiaoDienChinh extends JFrame implements MouseListener, ActionL
         JMenu mnNhanVien = new JMenu("Nhân Viên");
         mnNhanVien.setIcon(new ImageIcon(getClass().getResource("/icons/employee_icon.png")));
         mnNhanVien.setFont(ftmn);
-        mnChamCong = new JMenuItem("Chấm Công");
+        mnChamCong = new JMenuItem("Xin nghỉ phép");
         mnNhanVien.add(mnChamCong);
-        mnTinhLuong = new JMenuItem("Tính Lương");
+        mnTinhLuong = new JMenuItem("Xem Lương");
         mnNhanVien.add(mnTinhLuong);
         mnChamCong.setPreferredSize(new Dimension(150,30));
         mnTinhLuong.setPreferredSize(new Dimension(150,30));
@@ -103,28 +103,28 @@ public class Form_GiaoDienChinh extends JFrame implements MouseListener, ActionL
         mnCapNhat.setIcon(new ImageIcon(getClass().getResource("/icons/update_icon_menu.png")));
         mnCapNhat.setFont(ftmn);
         mnCapNhat.add(mnCapNhatNV = new JMenuItem("Nhân Viên"));
-        mnCapNhat.add(mnCapNhatCN = new JMenuItem("Công Nhân"));
-        mnCapNhat.add(mnCapNhatSP = new JMenuItem("Sản Phẩm"));
+        //mnCapNhat.add(mnCapNhatCN = new JMenuItem("Công Nhân"));
+        //mnCapNhat.add(mnCapNhatSP = new JMenuItem("Sản Phẩm"));
         if(isAdmin){
-        mnCapNhat.add(Heso = new JMenuItem("Hệ số"));
-        Heso.setPreferredSize(new Dimension(150,30));
+        mnCapNhat.add(Admin = new JMenuItem("Hệ số"));
+        Admin.setPreferredSize(new Dimension(150,30));
         }
         
         mnCapNhatNV.setPreferredSize(new Dimension(150,30));
-        mnCapNhatCN.setPreferredSize(new Dimension(150,30));
-        mnCapNhatSP.setPreferredSize(new Dimension(150,30));
+       // mnCapNhatCN.setPreferredSize(new Dimension(150,30));
+       // mnCapNhatSP.setPreferredSize(new Dimension(150,30));
 
 
         JMenu mnTimKiem = new JMenu("Tìm Kiếm");
         mnTimKiem.setIcon(new ImageIcon(getClass().getResource("/icons/search_icon.png")));
         mnTimKiem.setFont(ftmn);
         mnTimKiem.add(mnTimNhanVien = new JMenuItem("Nhân Viên"));
-        mnTimKiem.add(mnTimCongNhan = new JMenuItem("Công Nhân"));
-        mnTimKiem.add(mnTimSanPham = new JMenuItem("Sản Phẩm"));
+        //mnTimKiem.add(mnTimCongNhan = new JMenuItem("Công Nhân"));
+        //mnTimKiem.add(mnTimSanPham = new JMenuItem("Sản Phẩm"));
 
-        mnTimSanPham.setPreferredSize(new Dimension(150,30));
+//        mnTimSanPham.setPreferredSize(new Dimension(150,30));
         mnTimNhanVien.setPreferredSize(new Dimension(150,30));
-        mnTimCongNhan.setPreferredSize(new Dimension(150,30));
+      //  mnTimCongNhan.setPreferredSize(new Dimension(150,30));
 
 
         JMenu mnTaiKhoan = new JMenu("Tài Khoản");
@@ -155,7 +155,7 @@ public class Form_GiaoDienChinh extends JFrame implements MouseListener, ActionL
         //menuBar.add(mnCongNhan);
        // menuBar.add(mnSanPham);
         menuBar.add(mnCapNhat);
-        menuBar.add(mnTimKiem);
+       // menuBar.add(mnTimKiem);
         menuBar.add(mnTaiKhoan);
         menuBar.add(menu);
         menuBar.add(mnThoat);
@@ -200,6 +200,37 @@ public class Form_GiaoDienChinh extends JFrame implements MouseListener, ActionL
         diemDanh.setForeground(Color.GREEN);
         diemDanh.setPreferredSize(new Dimension(1000,40));
         
+        String Calam = "";
+        
+       
+        
+        JLabel CaLam = new JLabel();
+        CaLam.setForeground(Color.GREEN);
+        
+        
+        
+         if(RunApplication.CheckCaLam() == 6 ){
+              Calam = "Ngoài giờ làm việc";
+            CaLam.setForeground(Color.RED);
+             
+        System.out.print("CheckCalam: "+RunApplication.CheckCaLam());
+        }
+        else if(RunApplication.CheckCaLam() == 0 ){
+             Calam = "Đang nghỉ giữa ca";
+            CaLam.setForeground(Color.GREEN);
+            
+             System.out.print("CheckCalam: "+RunApplication.CheckCaLam());
+        }
+        else
+        {
+            Calam +=RunApplication.CheckCaLam();
+         CaLam.setForeground(Color.GREEN);
+        }
+        
+         CaLam.setText("Ca làm việc số : " + Calam );
+       CaLam.setFont(new Font("arial",Font.BOLD,25));
+        
+        CaLam.setPreferredSize(new Dimension(1000,40));
         //lbImage.setIcon(new ImageIcon(getClass().getResource("/icons/background.jpg")));
 
         pnCenterN.add(lblTieuDe);
@@ -207,6 +238,7 @@ public class Form_GiaoDienChinh extends JFrame implements MouseListener, ActionL
         pnCenterC.add(tenNV);
         pnCenterC.add(diemDanh);
         pnCenterC.add(time);
+        pnCenterC.add(CaLam);
         
         pnCneter.add(pnCenterN,BorderLayout.NORTH);
         pnCneter.add(pnCenterC,BorderLayout.CENTER);
@@ -226,19 +258,19 @@ public class Form_GiaoDienChinh extends JFrame implements MouseListener, ActionL
 
         if(isAdmin){
         Taotaikhoan.addActionListener(this);
-        Heso.addActionListener(this);
+        Admin.addActionListener(this);
         }
         mnChamCong.addActionListener(this);
         mnTinhLuong.addActionListener(this);
         mnChamCongCN.addActionListener(this);
         mnTinhLuongCN.addActionListener(this);
         mnPhanCong.addActionListener(this);
-        mnCapNhatCN.addActionListener(this);
+       // mnCapNhatCN.addActionListener(this);
         mnCapNhatNV.addActionListener(this);
-        mnCapNhatSP.addActionListener(this);
+//        mnCapNhatSP.addActionListener(this);
         mnTimNhanVien.addActionListener(this);
-        mnTimCongNhan.addActionListener(this);
-        mnTimSanPham.addActionListener(this);
+        //mnTimCongNhan.addActionListener(this);
+       // mnTimSanPham.addActionListener(this);
         mnDoiMatKhau.addActionListener(this);
         mnDangXuat.addActionListener(this);
         mnCongDoan.addActionListener(this);
@@ -304,14 +336,14 @@ public class Form_GiaoDienChinh extends JFrame implements MouseListener, ActionL
 } else if(isAdmin && e.getSource().equals(Taotaikhoan)) {
             System.out.println("Menu Taotaikhoan Selected!");
             //setVisible(false);
-            Form_DangKy form_dangKy = new Form_DangKy();
+            Form_DangKy form_dangKy = new Form_DangKy(pnCneter);
             form_dangKy.setVisible(true);
-        }else if(e.getSource().equals(Heso)) {
+        }else if(e.getSource().equals(Admin)) {
             System.out.println("heso Selected!");
             setVisible(false);
-            Form_HeSo heSo = new Form_HeSo();
+            Form_Admin admin = new Form_Admin();
             pnCneter.removeAll();
-            pnCneter.add(heSo);
+            pnCneter.add(admin);
             validate();
         }
             else if(e.getSource().equals(mnDangXuat)) {
@@ -325,19 +357,22 @@ public class Form_GiaoDienChinh extends JFrame implements MouseListener, ActionL
             pnCneter.removeAll();
             pnCneter.add(form_nhanVienHanhChinh);
             validate();
-        } else if (e.getSource().equals(mnCapNhatCN)) {
-            System.out.println("Menu Cap Nhat Cong Nhan Selected!");
-            Form_CongNhan form_congNhan = new Form_CongNhan();
-            pnCneter.removeAll();
-            pnCneter.add(form_congNhan);
-            validate();
-        } else if (e.getSource().equals(mnCapNhatSP)) {
-            System.out.println("Menu Cap Nhat San Pham Selected!");
-            Form_SanPham form_sanPham = new Form_SanPham();
-            pnCneter.removeAll();
-            pnCneter.add(form_sanPham);
-            validate();
-        } else if (e.getSource().equals(mnCongDoan)) {
+        } 
+//        else if (e.getSource().equals(mnCapNhatCN)) {
+//            System.out.println("Menu Cap Nhat Cong Nhan Selected!");
+//            Form_CongNhan form_congNhan = new Form_CongNhan();
+//            pnCneter.removeAll();
+//            pnCneter.add(form_congNhan);
+//            validate();
+//        } 
+//        else if (e.getSource().equals(mnCapNhatSP)) {
+//            System.out.println("Menu Cap Nhat San Pham Selected!");
+//            Form_SanPham form_sanPham = new Form_SanPham();
+//            pnCneter.removeAll();
+//            pnCneter.add(form_sanPham);
+//            validate();
+//        } 
+        else if (e.getSource().equals(mnCongDoan)) {
             System.out.println("Menu Cong Doan Selected!");
             Form_CongDoan form_congDoan = new Form_CongDoan();
             pnCneter.removeAll();
@@ -367,18 +402,22 @@ public class Form_GiaoDienChinh extends JFrame implements MouseListener, ActionL
             pnCneter.removeAll();
             pnCneter.add(form_timNhanVien);
             validate();
-        } else if (e.getSource().equals(mnTimCongNhan)) {
-            System.out.println("Menu Tim Kiem Cong Nhan Selected!");
-            Form_TimCongNhan form_timCongNhan = new Form_TimCongNhan();
-            pnCneter.removeAll();
-            pnCneter.add(form_timCongNhan);
-            validate();
-        } else if (e.getSource().equals(mnTimSanPham)) {
-            System.out.println("Menu Tim Kiem San Pham Selected!");
-            Form_TimSanPham form_timSanPham = new Form_TimSanPham();
-            pnCneter.removeAll();
-            pnCneter.add(form_timSanPham);
-            validate();
-        }
+        } 
+        
+//        else if (e.getSource().equals(mnTimCongNhan)) {
+//            System.out.println("Menu Tim Kiem Cong Nhan Selected!");
+//            Form_TimCongNhan form_timCongNhan = new Form_TimCongNhan();
+//            pnCneter.removeAll();
+//            pnCneter.add(form_timCongNhan);
+//            validate();
+//        }
+//        else if (e.getSource().equals(mnTimSanPham)) {
+//            System.out.println("Menu Tim Kiem San Pham Selected!");
+//            Form_TimSanPham form_timSanPham = new Form_TimSanPham();
+//            pnCneter.removeAll();
+//            pnCneter.add(form_timSanPham);
+//            validate();
+//        }
+        
     }
 }

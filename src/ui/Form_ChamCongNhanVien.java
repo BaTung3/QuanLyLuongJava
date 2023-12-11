@@ -54,7 +54,7 @@ public class Form_ChamCongNhanVien extends JPanel {
         pnNorth = new JPanel();
         JPanel pnTieuDe = new JPanel();
         pnNorth.setLayout(new BorderLayout());
-        JLabel lblTieuDe = new JLabel("CHẤM CÔNG NHÂN VIÊN HÀNH CHÍNH");
+        JLabel lblTieuDe = new JLabel("BÁO CÁO NGHỈ PHÉP NHÂN VIÊN");
         lblTieuDe.setFont(new Font("arial", Font.BOLD,20));
         lblTieuDe.setForeground(Color.RED);
         pnTieuDe.add(lblTieuDe);
@@ -123,14 +123,14 @@ public class Form_ChamCongNhanVien extends JPanel {
 
         b.add(b5 = Box.createHorizontalBox());
         b5.add(Box.createHorizontalStrut(20));
-        b5.add(cbTrangThai = new JRadioButton("Không phép"));
-        b5.add(Box.createHorizontalStrut(20));
-        b5.add(cbNghiPhep = new JRadioButton("Có Phép"));
-        b.add(Box.createVerticalStrut(40));
+//        b5.add(cbTrangThai = new JRadioButton("Không phép"));
+//        b5.add(Box.createHorizontalStrut(20));
+//        b5.add(cbNghiPhep = new JRadioButton("Có Phép"));
+//        b.add(Box.createVerticalStrut(40));
 
         btnGR = new ButtonGroup();
-        btnGR.add(cbNghiPhep);
-        btnGR.add(cbTrangThai);
+//        btnGR.add(cbNghiPhep);
+//        btnGR.add(cbTrangThai);
 
         txtNhanVien.setEditable(false);
         txtPhongBan.setEditable(false);
@@ -172,11 +172,11 @@ public class Form_ChamCongNhanVien extends JPanel {
 
 
         JButton btnThem,btnXoa,btnSua,btnThoat,btnXoaRong;
-        pnCenC.add(btnThem = new JButton("Chấm Công"));
+        pnCenC.add(btnThem = new JButton("Báo nghỉ phép"));
         btnThem.setIcon(new ImageIcon(getClass().getResource("/icons/add_icon.png")));
         btnThem.setBackground(Color.decode("#4caf50"));
         btnThem.setForeground(Color.decode("#FFFFFF"));
-        pnCenC.add(btnXoa = new JButton("Xóa Chấm Công"));
+        pnCenC.add(btnXoa = new JButton("Xóa Báo cáo"));
         btnXoa.setIcon(new ImageIcon(getClass().getResource("/icons/delete_icon.png")));
         btnXoa.setBackground(Color.decode("#f44336"));
         btnXoa.setForeground(Color.decode("#FFFFFF"));
@@ -309,11 +309,15 @@ public class Form_ChamCongNhanVien extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (tableNV.getSelectedRow() != -1) {
                     int trangThai, nghiPhep;
-                    if (cbTrangThai.isSelected()) {
-                        trangThai = 1;
-                    } else trangThai = 0;
-                    if (cbNghiPhep.isSelected()) nghiPhep = 1;
-                    else nghiPhep = 0;
+                    
+                    trangThai = 0;
+                    nghiPhep = 1;
+                    
+//                    if (cbTrangThai.isSelected()) {
+//                        trangThai = 1;
+//                    } else trangThai = 0;
+//                    if (cbNghiPhep.isSelected()) nghiPhep = 1;
+//                    else nghiPhep = 0;
                     String dateTime = (String) formatter.format(ngayCham.getDate());
                     ChamCongNhanVien chamCongNhanVien = new ChamCongNhanVien("CC001",
                             Date.valueOf(dateTime),

@@ -1,5 +1,6 @@
 package dao;
 
+import application.RunApplication;
 import connection.MyConnection;
 import entity.ChamCongNhanVien;
 import entity.LuongNhanVien;
@@ -66,6 +67,40 @@ public class LuongNhanVien_Dao {
         return false;
     }
 
+    public boolean deleteListLuongNV(ArrayList<String> maLuong) {
+        try {
+            
+             System.out.println("senD : "+ maLuong.toString());
+             
+             String mau = "delete from LuongNhanVien where MALUONG IN (";
+             int size =  maLuong.size();
+             
+             for (int i = 0; i < size; i++){
+                 if(i!= size - 1){
+                      mau += "'"+ maLuong.get(i) +"' , " ;
+                      }
+                      else{
+                          mau += "'"+ maLuong.get(i) +"' )" ;
+                      }
+             }
+             
+             System.out.println("String mau : " + mau);
+            
+            PreparedStatement stmt = con.prepareStatement(mau);
+            //stmt.setString(1, nhommaLuong);
+            
+            System.out.println("deleteListLuongNV : co chạy ");
+            
+            int n = stmt.executeUpdate();
+            if(n > 0)
+                return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    
     public boolean deleteLuongNV(String maLuong) {
         try {
             PreparedStatement stmt = con.prepareStatement("delete from LuongNhanVien where MALUONG = ?");
@@ -116,11 +151,109 @@ public class LuongNhanVien_Dao {
             return false;
         return true;
     }
+    
     public List<LuongNhanVien>TimKiemThangNam(int thang, int nam){
         List<LuongNhanVien> list = new ArrayList<>();
         try{
             PreparedStatement stmt = con.prepareStatement("select * from LuongNhanVien where thang = ? and nam = ?");
             stmt.setInt(1,thang);
+            stmt.setInt(2,nam);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                LuongNhanVien luongNhanVien =new LuongNhanVien(rs.getString(1),rs.getInt(2),rs.getInt(3),
+                        rs.getDouble(4));
+                luongNhanVien.setNhanVienHanhChinh(nhanVienHanhChinh_dao.TimKiemMa(rs.getString(5)));
+                list.add(luongNhanVien);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<LuongNhanVien>TimKiemNam( int nam){
+        List<LuongNhanVien> list = new ArrayList<>();
+        try{
+            PreparedStatement stmt = con.prepareStatement("select * from LuongNhanVien where nam = ?");
+            stmt.setInt(1,nam);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                LuongNhanVien luongNhanVien =new LuongNhanVien(rs.getString(1),rs.getInt(2),rs.getInt(3),
+                        rs.getDouble(4));
+                luongNhanVien.setNhanVienHanhChinh(nhanVienHanhChinh_dao.TimKiemMa(rs.getString(5)));
+                list.add(luongNhanVien);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+     public List<LuongNhanVien>TimKiemLuongCVThangNam(String hsl,int thang, int nam){
+        List<LuongNhanVien> list = new ArrayList<>();
+        try{
+            PreparedStatement stmt = con.prepareStatement("select L.* from LuongNhanVien as L,NhanVien as N where L.MANV = N.MANV and N.MAHSL = ?  and L.thang = ? and L.nam = ?");
+            stmt.setString(1,RunApplication.ChucvuToMaHesoluong(hsl));
+            stmt.setInt(2,thang);
+            stmt.setInt(3,nam);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                LuongNhanVien luongNhanVien =new LuongNhanVien(rs.getString(1),rs.getInt(2),rs.getInt(3),
+                        rs.getDouble(4));
+                luongNhanVien.setNhanVienHanhChinh(nhanVienHanhChinh_dao.TimKiemMa(rs.getString(5)));
+                list.add(luongNhanVien);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<LuongNhanVien>TimKiemLuongCVNam(String hsl, int nam){
+        List<LuongNhanVien> list = new ArrayList<>();
+        try{
+            PreparedStatement stmt = con.prepareStatement("select L.* from LuongNhanVien as L,NhanVien as N where L.MANV = N.MANV and N.MAHSL = ?  and L.nam = ?");
+            stmt.setString(1,RunApplication.ChucvuToMaHesoluong(hsl));
+            stmt.setInt(2,nam);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                LuongNhanVien luongNhanVien =new LuongNhanVien(rs.getString(1),rs.getInt(2),rs.getInt(3),
+                        rs.getDouble(4));
+                luongNhanVien.setNhanVienHanhChinh(nhanVienHanhChinh_dao.TimKiemMa(rs.getString(5)));
+                list.add(luongNhanVien);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    
+     public List<LuongNhanVien>TimKiemLuongThangNam(String maNV,int thang, int nam){
+        List<LuongNhanVien> list = new ArrayList<>();
+        try{
+            PreparedStatement stmt = con.prepareStatement("select * from LuongNhanVien where MANV = ? and thang = ? and nam = ?");
+            stmt.setString(1,maNV);
+            stmt.setInt(2,thang);
+            stmt.setInt(3,nam);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                LuongNhanVien luongNhanVien =new LuongNhanVien(rs.getString(1),rs.getInt(2),rs.getInt(3),
+                        rs.getDouble(4));
+                luongNhanVien.setNhanVienHanhChinh(nhanVienHanhChinh_dao.TimKiemMa(rs.getString(5)));
+                list.add(luongNhanVien);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<LuongNhanVien>TimKiemLuongMaNam(String maNV, int nam){
+        List<LuongNhanVien> list = new ArrayList<>();
+        try{
+            PreparedStatement stmt = con.prepareStatement("select * from LuongNhanVien where MANV = ? and nam = ?");
+            stmt.setString(1,maNV);
             stmt.setInt(2,nam);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()) {

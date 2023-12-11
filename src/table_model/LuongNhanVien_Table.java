@@ -1,5 +1,6 @@
 package table_model;
 
+import application.RunApplication;
 import entity.LuongNhanVien;
 
 import javax.swing.table.AbstractTableModel;
@@ -9,7 +10,7 @@ public class LuongNhanVien_Table extends AbstractTableModel {
 
     private List<LuongNhanVien> ds;
     String [] headers = {"Mã Lương","Mã Nhân Viên", "Tên Nhân Viên", "CMND","Lương Cơ Bản",
-            "Hệ Số Lương", "Phụ Cấp","Phòng Ban", "Tháng", "Năm", "Lương"};
+            "Chức Vụ", "Phụ Cấp","Phòng Ban", "Tháng", "Năm", "Lương"};
 
     public LuongNhanVien_Table(List<LuongNhanVien> ds){
         super();
@@ -56,7 +57,7 @@ public class LuongNhanVien_Table extends AbstractTableModel {
             case 4:
                 return luongNhanVien.getNhanVienHanhChinh().getLuongCoBan();
             case 5:
-                return luongNhanVien.getNhanVienHanhChinh().getHeSoLuong().getHeSoLuong();
+                return RunApplication.HesoluongToChucvu(luongNhanVien.getNhanVienHanhChinh().getHeSoLuong().getHeSoLuong());
             case 6:
                 return luongNhanVien.getNhanVienHanhChinh().getPhuCap();
             case 7:

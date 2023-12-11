@@ -25,9 +25,16 @@ public class Form_DangKy extends JFrame {
     private JTextField txtQuyen;
     boolean rs = false;
     String maCD;
+    
+    JPanel pnCneter;
 
 
     public Form_DangKy() {
+        doShow();
+    }
+    
+     public Form_DangKy(JPanel pnCneter) {
+         this.pnCenter = pnCenter;
         doShow();
     }
 
@@ -135,8 +142,10 @@ public class Form_DangKy extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                Form_DangNhap dangNhap_form = new Form_DangNhap();
-                dangNhap_form.setVisible(true);
+                 pnCneter.removeAll();
+                 validate();
+//                Form_DangNhap dangNhap_form = new Form_DangNhap();
+//                dangNhap_form.setVisible(true);
             }
         });
 

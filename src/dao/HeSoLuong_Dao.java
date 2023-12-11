@@ -32,7 +32,7 @@ public class HeSoLuong_Dao {
         try {
             ResultSet rs = getResultSet("select_HSL");
             while(rs.next()){
-                HeSoLuong heSoLuong =new HeSoLuong(rs.getString(1),rs.getDouble(2));
+                HeSoLuong heSoLuong =new HeSoLuong(rs.getString(1),rs.getDouble(2),rs.getString(3));
                 ds.add(heSoLuong);
             }
         } catch (SQLException e) {

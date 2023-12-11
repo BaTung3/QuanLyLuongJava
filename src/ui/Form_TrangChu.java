@@ -64,11 +64,25 @@ public class Form_TrangChu extends JPanel {
         diemDanh.setPreferredSize(new Dimension(1000,40));
         //lbImage.setIcon(new ImageIcon(getClass().getResource("/icons/background.jpg")));
 
+          String Calam = "";
+        
+        if(RunApplication.CheckCaLam() < 0 )
+            Calam = "Đang nghỉ giữa ca";
+        else
+            Calam +=RunApplication.CheckCaLam();
+        
+        JLabel CaLam = new JLabel();
+         CaLam.setText("Ca làm việc số : " + Calam );
+       CaLam.setFont(new Font("arial",Font.BOLD,25));
+        CaLam.setForeground(Color.GREEN);
+        CaLam.setPreferredSize(new Dimension(1000,40));
+        
         pnCenterN.add(lblTieuDe);
         pnCenterC.add(lbImage);
          pnCenterC.add(tenNV);
         pnCenterC.add(diemDanh);
         pnCenterC.add(time);
+        pnCenterC.add(CaLam);
 
         this.setLayout(new BorderLayout());
         this.add(pnCenterN, BorderLayout.NORTH);

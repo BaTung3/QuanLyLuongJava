@@ -2,6 +2,7 @@ package ui;
 
 import application.RunApplication;
 import dao.ChamCongNhanVien_Dao;
+import dao.HeSoLuong_Dao;
 import dao.LuongNhanVien_Dao;
 import dao.NhanVienHanhChinh_Dao;
 import entity.*;
@@ -30,10 +31,10 @@ public class Form_LuongNhanVien extends JPanel {
      */
     private static final long serialVersionUID = 1L;
     JPanel pnNorth, pnCenter, pnSouth;
-    JLabel lblNam, lblNhanVien, lblMaNhanVien, lblThang, lblMaLuong, lblThucLanh;
+    JLabel lblNam, lblNhanVien, lblMaNhanVien, lblThang, lblMaLuong, lblThucLanh,lblChucVu;
     JTextField txtMaLuong; 
     JFormattedTextField     txtThucLanh;
-    JComboBox cbcThang, cbcNam, cbcMaNV, cbcTenNV;
+    JComboBox cbcThang, cbcNam, cbcMaNV, cbcTenNV,cbcChucVu;
 
     public Form_LuongNhanVien() {
         doShow();
@@ -86,8 +87,13 @@ public class Form_LuongNhanVien extends JPanel {
         b3.add(Box.createHorizontalStrut(20));
         b3.add(lblThang = new JLabel("Tháng:"));
         b3.add(cbcThang = new JComboBox<>());
-        for (int i = 1; i <= 12; i++) {
+        for (int i = 0; i <= 12; i++) {
+            if(i==0){
+                cbcThang.addItem("Cả năm");
+            }
+            else{
             cbcThang.addItem(i);
+            }
         }
         cbcThang.setPreferredSize(new Dimension(260, 20));
         b.add(Box.createVerticalStrut(10));
@@ -103,7 +109,26 @@ public class Form_LuongNhanVien extends JPanel {
             cbcNam.addItem(i);
         }
         cbcNam.setPreferredSize(new Dimension(260, 20));
+        b.add(Box.createVerticalStrut(10));
+        b.add(b5 = Box.createHorizontalBox());
+        b5.add(Box.createHorizontalStrut(20));
+         //b4.add(Box.createHorizontalStrut(20));
+        b5.add(lblChucVu = new JLabel("Chức vụ: "));
+        b5.add(cbcChucVu = new JComboBox<>());
+        HeSoLuong_Dao heSoLuong_dao = new HeSoLuong_Dao();
+        cbcChucVu.addItem("Tất cả");
+        for (HeSoLuong heSoLuong : heSoLuong_dao.getLS()) {
+           // cbcHeSoLuong.addItem(String.valueOf(heSoLuong.getHeSoLuong()));
+           
+           cbcChucVu.addItem(heSoLuong.getChucVu());
+        }
+        
+        cbcChucVu.setPreferredSize(new Dimension(260, 20));
+        
         b.add(Box.createVerticalStrut(60));
+        
+        
+       
 
         txtMaLuong.setEditable(false);
         txtThucLanh.setEditable(false);
@@ -134,14 +159,14 @@ public class Form_LuongNhanVien extends JPanel {
 
 
         JButton btnThem, btnXoa, btnSua, btnThoat, btnIn;
-        pnCenC.add(btnThem = new JButton("Tính Lương"));
+        pnCenC.add(btnThem = new JButton("Lọc Lương"));
         btnThem.setIcon(new ImageIcon(getClass().getResource("/icons/add_icon.png")));
         btnThem.setBackground(Color.decode("#4caf50"));
         btnThem.setForeground(Color.decode("#FFFFFF"));
-        pnCenC.add(btnXoa = new JButton("Xóa Lương"));
-        btnXoa.setIcon(new ImageIcon(getClass().getResource("/icons/delete_icon.png")));
-        btnXoa.setBackground(Color.decode("#f44336"));
-        btnXoa.setForeground(Color.decode("#FFFFFF"));
+//        pnCenC.add(btnXoa = new JButton("Xóa Lương"));
+//        btnXoa.setIcon(new ImageIcon(getClass().getResource("/icons/delete_icon.png")));
+//        btnXoa.setBackground(Color.decode("#f44336"));
+//        btnXoa.setForeground(Color.decode("#FFFFFF"));
         pnCenC.add(btnSua = new JButton("Làm Mới"));
         btnSua.setIcon(new ImageIcon(getClass().getResource("/icons/update_icon.png")));
         btnSua.setBackground(Color.decode("#00bcd4"));
@@ -211,6 +236,10 @@ public class Form_LuongNhanVien extends JPanel {
         LuongNhanVien_Dao luongNhanVien_dao = new LuongNhanVien_Dao();
         LuongNhanVien_Table model = new LuongNhanVien_Table(luongNhanVien_dao.getLS());
         JTable table = new JTable();
+        
+        table.setRowSelectionAllowed(true);
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        
         table.setModel(model);
         table.addMouseListener(new MouseListener() {
             @Override
@@ -263,53 +292,114 @@ public class Form_LuongNhanVien extends JPanel {
                 LuongNhanVien_Dao luongNhanVien_Dao = new LuongNhanVien_Dao();
                 
                 if (cbcMaNV.getSelectedIndex() == 0) {
-                    for (NhanVienHanhChinh nv : nhanVienHanhChinh_dao.getLS()) {
-                        LuongNhanVien luongNhanVien = new LuongNhanVien("L00"+table.getRowCount()+1, Integer.parseInt(cbcThang.getSelectedItem().toString()),
-                                Integer.parseInt(cbcNam.getSelectedItem().toString()), nv.getLuongCoBan() * nv.getHeSoLuong().getHeSoLuong() + nv.getPhuCap());
-                        luongNhanVien.setNhanVienHanhChinh(nv);
-                        if (!luongNhanVien_dao.TimKiem(nv.getMaNV(), luongNhanVien.getThang(), luongNhanVien.getNam())) {
-                            luongNhanVien_dao.addLuongNhanVien(luongNhanVien);
-                        }
+                    if(cbcChucVu.getSelectedIndex() == 0){
+                    if(cbcThang.getSelectedIndex() == 0){
+                        table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.TimKiemNam(Integer.parseInt(cbcNam.getSelectedItem().toString()))));
                     }
-                    table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.getLS()));
-                } else {
-                    NhanVienHanhChinh nhanVienHanhChinh = nhanVienHanhChinh_dao.TimKiemMa(cbcMaNV.getSelectedItem().toString());
-                    LuongNhanVien luongNhanVien = new LuongNhanVien("L00"+table.getRowCount()+1, Integer.parseInt(cbcThang.getSelectedItem().toString()),
-                            Integer.parseInt(cbcNam.getSelectedItem().toString()),   RunApplication.LuongPhaiTra(nhanVienHanhChinh.getLuongCoBan(),nhanVienHanhChinh.getHeSoLuong().getHeSoLuong(),luongNhanVien_Dao.GetTongTruLuongCa(nhanVienHanhChinh.getMaNV(),Integer.parseInt(cbcThang.getSelectedItem().toString()),Integer.parseInt(cbcNam.getSelectedItem().toString())),(float)nhanVienHanhChinh.getPhuCap())         );
-                    luongNhanVien.setNhanVienHanhChinh(nhanVienHanhChinh);
-                    if (!luongNhanVien_dao.TimKiem(nhanVienHanhChinh.getMaNV(), luongNhanVien.getThang(), luongNhanVien.getNam())) {
-                        luongNhanVien_dao.addLuongNhanVien(luongNhanVien);
+//                    for (NhanVienHanhChinh nv : nhanVienHanhChinh_dao.getLS()) {
+//                        LuongNhanVien luongNhanVien = new LuongNhanVien("L00"+table.getRowCount()+1, Integer.parseInt(cbcThang.getSelectedItem().toString()),
+//                                Integer.parseInt(cbcNam.getSelectedItem().toString()), nv.getLuongCoBan() * nv.getHeSoLuong().getHeSoLuong() + nv.getPhuCap());
+//                        luongNhanVien.setNhanVienHanhChinh(nv);
+//                        if (!luongNhanVien_dao.TimKiem(nv.getMaNV(), luongNhanVien.getThang(), luongNhanVien.getNam())) {
+//                            luongNhanVien_dao.addLuongNhanVien(luongNhanVien);
+//                        }
+//                    }
+                   // table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.getLS()));
+                    else{
+                   table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.TimKiemThangNam( Integer.parseInt(cbcThang.getSelectedItem().toString()),Integer.parseInt(cbcNam.getSelectedItem().toString()))));
                     }
-                    table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.getLS()));
+                    
+                    }
+                    
+                    else{
+                        
+                         if(cbcThang.getSelectedIndex() == 0){
+                        table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.TimKiemLuongCVNam(cbcChucVu.getSelectedItem().toString(),Integer.parseInt(cbcNam.getSelectedItem().toString()))));
+                    }
+//                   
+                    else{
+                   table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.TimKiemLuongCVThangNam(cbcChucVu.getSelectedItem().toString() ,Integer.parseInt(cbcThang.getSelectedItem().toString()),Integer.parseInt(cbcNam.getSelectedItem().toString()))));
+                    }
+                         
+                    }
+                } 
+                
+                else {
+                    if(cbcThang.getSelectedIndex() == 0){
+                        table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.TimKiemLuongMaNam(cbcMaNV.getSelectedItem().toString(),Integer.parseInt(cbcNam.getSelectedItem().toString()))));
+                    }
+                   
+                    else{
+                   table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.TimKiemLuongThangNam(cbcMaNV.getSelectedItem().toString(), Integer.parseInt(cbcThang.getSelectedItem().toString()),Integer.parseInt(cbcNam.getSelectedItem().toString()))));
+                    }
+//                    NhanVienHanhChinh nhanVienHanhChinh = nhanVienHanhChinh_dao.TimKiemMa(cbcMaNV.getSelectedItem().toString());
+//                    LuongNhanVien luongNhanVien = new LuongNhanVien("L00"+table.getRowCount()+1, Integer.parseInt(cbcThang.getSelectedItem().toString()),
+//                            Integer.parseInt(cbcNam.getSelectedItem().toString()),   RunApplication.LuongPhaiTra(nhanVienHanhChinh.getLuongCoBan(),nhanVienHanhChinh.getHeSoLuong().getHeSoLuong(),luongNhanVien_Dao.GetTongTruLuongCa(nhanVienHanhChinh.getMaNV(),Integer.parseInt(cbcThang.getSelectedItem().toString()),Integer.parseInt(cbcNam.getSelectedItem().toString())),(float)nhanVienHanhChinh.getPhuCap())         );
+//                    luongNhanVien.setNhanVienHanhChinh(nhanVienHanhChinh);
+//                    if (!luongNhanVien_dao.TimKiem(nhanVienHanhChinh.getMaNV(), luongNhanVien.getThang(), luongNhanVien.getNam())) {
+//                        luongNhanVien_dao.addLuongNhanVien(luongNhanVien);
+//                    }
+                    //table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.getLS()));
+                    
                 }
+                
 
             }
         });
         //Sự Kiện Xóa
-        btnXoa.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int r = table.getSelectedRow();
-                if (r != -1) {
-                    int tb = JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn xóa dòng này?", "Delete",
-                            JOptionPane.YES_NO_OPTION);
-                    if (tb == JOptionPane.YES_OPTION) {
-                        String maX = table.getValueAt(r,0).toString();
-                        if (luongNhanVien_dao.deleteLuongNV(maX)) {
-                            try {
-                                table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.getLS()));
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                        clearTextField();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng cần xóa!");
-                }
-            }
-        });
-        //Su Kien Sua
+//        btnXoa.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                int r = table.getSelectedRow();
+//                if (r != -1) {
+//                    int tb = JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn xóa dòng này?", "Delete",
+//                            JOptionPane.YES_NO_OPTION);
+//                    if (tb == JOptionPane.YES_OPTION) {
+//                        
+//                        String maX = table.getValueAt(r,0).toString();
+//                        String senD ="( ";
+//                        int[] selectedrows = table.getSelectedRows();
+//                        ArrayList<String> maLuong =  new ArrayList<String>();
+//                        
+//                        System.out.println("selectedrows lenght : "+ selectedrows.length);
+//                        
+//                         for (int i = 0; i < selectedrows.length; i++)
+//                     {
+//
+//                     System.out.println(table.getValueAt(selectedrows[i], 0).toString());
+//                     
+//                      maLuong.add(table.getValueAt(selectedrows[i],0).toString()) ;
+//                      
+//                      if(i!=selectedrows.length-1){
+//                      senD += table.getValueAt(selectedrows[i],0).toString()+" , " ;
+//                      }
+//                      else{
+//                          senD += table.getValueAt(selectedrows[i],0).toString() +" )" ;
+//                      }
+//                       
+//
+//                }
+//                         System.out.println("senD : "+ senD);
+//                        
+//                        //System.out.print("table.getSelectedRows : " + selectedrows);
+//                        
+//                        if (luongNhanVien_dao.deleteListLuongNV(maLuong)) {
+//                            try {
+//                                table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.getLS()));
+//                            } catch (Exception ex) {
+//                                ex.printStackTrace();
+//                            }
+//                        }
+//                        //clearTextField();
+//                        
+//                    }
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "Bạn chưa chọn dòng cần xóa!");
+//                }
+//            }
+//        });
+        
+         //Su Kien Sua
 //        btnSua.addActionListener(new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {
@@ -345,6 +435,16 @@ public class Form_LuongNhanVien extends JPanel {
 //                }
 //            }
 //        });
+
+        
+        
+        //Su Kien Sua
+        btnSua.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                table.setModel(new LuongNhanVien_Table(luongNhanVien_dao.getLS()));
+            }
+        });
 
         //Su kien luu
 //        btnLuu.addActionListener(new ActionListener() {
@@ -407,10 +507,10 @@ public class Form_LuongNhanVien extends JPanel {
         btnIn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LuongNhanVien_Dao luongNhanVien_dao = new LuongNhanVien_Dao();
-                LuongNhanVien_Table model = new LuongNhanVien_Table(luongNhanVien_dao.TimKiemThangNam(Integer.parseInt(cbcThang.getSelectedItem().toString()),Integer.parseInt(cbcNam.getSelectedItem().toString())));
-                JTable table = new JTable();
-                table.setModel(model);
+//                LuongNhanVien_Dao luongNhanVien_dao = new LuongNhanVien_Dao();
+//                LuongNhanVien_Table model = new LuongNhanVien_Table(luongNhanVien_dao.TimKiemThangNam(Integer.parseInt(cbcThang.getSelectedItem().toString()),Integer.parseInt(cbcNam.getSelectedItem().toString())));
+//                JTable table = new JTable();
+//                table.setModel(model);
                 exportExcel(table);
             }
         });

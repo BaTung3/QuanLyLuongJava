@@ -22,8 +22,86 @@ public class RunApplication {
    
    public static LocalTime end = LocalTime.of( 21 , 00,00 ) ;
    
+   //Ca Lam//
+   
+   public static LocalTime start1 = LocalTime.of( 7 , 00,00 ) ;
+   
+   public static LocalTime end1 = LocalTime.of( 9 , 00,00 ) ;
+   
+   public static LocalTime start2 = LocalTime.of( 9 , 30,00 ) ;
+   
+   public static LocalTime end2 = LocalTime.of( 12 , 30,00 ) ;
+   
+   public static LocalTime start3 = LocalTime.of( 13 , 00,00 ) ;
+   
+   public static LocalTime end3 = LocalTime.of( 15 , 00,00 ) ;
+   
+   
+   public static LocalTime start4 = LocalTime.of( 15 , 30,00 ) ;
+   
+   public static LocalTime end4 = LocalTime.of( 17 , 30,00 ) ;
+   
+   
+   public static LocalTime start5 = LocalTime.of( 18 , 00,00 ) ;
+   
+   public static LocalTime end5 = LocalTime.of( 21 , 00,00 ) ;
+   
+   //End CaLam//
+   
    public static float heSoBH = 0.105f;
    public static float luongKhongThue = 11000000f;
+   
+   public static Double ChucvuToHesoluong(String hsl){
+
+                        if(hsl.equalsIgnoreCase("Nhân viên bán hàng"))
+                        {return 1*1.0;
+                        }
+                        else if (hsl.equalsIgnoreCase("Nhân viên kho"))
+                        {return 1.5;
+                        } 
+                        else if (hsl.equalsIgnoreCase("Kế toán"))
+                        {return 2*1.0;
+                        } 
+                         else if (hsl.equalsIgnoreCase("Trưởng phòng"))
+                        {return 2.5*1.0;
+                        } 
+                          else if (hsl.equalsIgnoreCase("Quản lý"))
+                        {return 3*1.0;
+                        } 
+                          else return 3.5;
+   }
+   
+    public static String ChucvuToMaHesoluong(String hsl){
+
+                        if(hsl.equalsIgnoreCase("Nhân viên bán hàng"))
+                        {return "HSL001";
+                        }
+                        else if (hsl.equalsIgnoreCase("Nhân viên kho"))
+                        {return "HSL002";
+                        } 
+                        else if (hsl.equalsIgnoreCase("Kế toán"))
+                        {return "HSL003";
+                        } 
+                         else if (hsl.equalsIgnoreCase("Trưởng phòng"))
+                        {return "HSL004";
+                        } 
+                          else if (hsl.equalsIgnoreCase("Quản lý"))
+                        {return "HSL005";
+                        } 
+                          else return "HSL006";
+   }
+   
+   public static String HesoluongToChucvu(double hsl){
+
+                        if(hsl ==1)
+                        {return "Nhân viên bán hàng";
+                        }
+                        else if (hsl ==1.5) return "Nhân viên kho";
+                        else if (hsl ==2)return "Kế toán";
+                         else if (hsl ==2.5)return "Trưởng phòng";
+                          else if (hsl ==3)return "Quản lý";
+                          else return "Giám Đốc";
+   }
    
       public static float TinhLuong(double lcb , double heso)
         {
@@ -70,6 +148,20 @@ public class RunApplication {
        if(LocalTime.now().isBefore(start))return false;
        else if (LocalTime.now().isAfter(end))return false;
        else return true;
+   }
+   
+   public static int CheckCaLam(){
+       LocalTime now = LocalTime.now();
+       
+      if(now.isBefore(end1)&& now.isAfter(start1))
+                        {return 1;
+                        }
+                        else if (now.isBefore(end2)&& now.isAfter(start2)) return 2;
+                        else if (now.isBefore(end3)&& now.isAfter(start3)) return 3;
+                        else if (now.isBefore(end4)&& now.isAfter(start4)) return 4;
+                        else if (now.isBefore(end5)&& now.isAfter(start5)) return 5;
+                        else if (now.isBefore(start)|| now.isAfter(end)) return 6;
+                                                  else return 0;
    }
    
     public static String GetTimeNow(String type){

@@ -1,5 +1,6 @@
 package dao;
 
+import application.RunApplication;
 import connection.MyConnection;
 import entity.CongNhan;
 import entity.NhanVienHanhChinh;
@@ -7,6 +8,9 @@ import entity.NhanVienHanhChinh;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import ui.Form_NhanVienHanhChinh;
 
 public class NhanVienHanhChinh_Dao {
     private Connection con;
@@ -43,6 +47,7 @@ public class NhanVienHanhChinh_Dao {
                 nv.setPhongban(phongBan_dao.TimKiemMa(rs.getString(11)));
                 ds.add(nv);
             }
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -52,8 +57,9 @@ public class NhanVienHanhChinh_Dao {
         return ds;
     }
     public boolean addNhanVien(NhanVienHanhChinh nv) {
+         PreparedStatement nvAdd;
         try {
-            PreparedStatement nvAdd = con.prepareStatement("INSERT INTO NhanVien ([HOTEN],[CMND],[NGAYSINH],[GIOITINH],[LUONGCOBAN]," +
+            nvAdd = con.prepareStatement("INSERT INTO NhanVien ([HOTEN],[CMND],[NGAYSINH],[GIOITINH],[LUONGCOBAN]," +
                     "[SODIENTHOAI],[DIACHI],[PHUCAP],[MAHSL],[MAPB]) VALUES(?,?,?,?,?,?,?,?,?,?)");
             nvAdd.setString(1,nv.getHoTen());
             nvAdd.setInt(2,nv.getCmnd());
@@ -66,15 +72,114 @@ public class NhanVienHanhChinh_Dao {
             nvAdd.setString(9,nv.getHeSoLuong().getMaHSL());
             nvAdd.setString(10,nv.getPhongban().getMaPB());
 
+
             int n = nvAdd.executeUpdate();
-            if(n > 0)
-                return true;
+           
+            
+            
+            if(n > 0 ){
+               nvAdd.close();  
+           
+              return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return false;
     }
+    
+    
+    public boolean addLuongNhanVien(NhanVienHanhChinh nv) {
+        try {
+            
+            boolean n2b = false;
+            boolean nextYearDone = false;
+            int nmonth = 0;
+            int nYear = 0;
+            int n2 = 0;
+            PreparedStatement nvAdd2;
+            String date = RunApplication.GetTimeNow("Date");//"31-12-2023"
+            
+             String onlyDate = date.substring(0, date.length()-5);
+             
+             System.out.println("String onlyDate "+onlyDate);
+            
+            String month = date.substring(date.length() - 7, date.length()-5);
+                
+                String year = date.substring(date.length()-4, date.length());
+                
+                try{
+                     nmonth = Integer.parseInt(month);
+                    nYear = Integer.parseInt(year);
+                     // output = 25
+                    
+                   
+                    n2b = true;
+                }
+                catch (NumberFormatException ex){
+                    ex.printStackTrace();
+                }
+            if(n2b){
+                
+                if(onlyDate.equalsIgnoreCase("31-12") && !nextYearDone){
+                      for(int i = 1 ; i < 13;i++){
+                
+                    nvAdd2 = con.prepareStatement("INSERT INTO LuongNhanVien ([THANG],[NAM],[LUONG],[MANV]" +
+                    ") VALUES(?,?,?,?)");
+                    nvAdd2.setInt(1,i);
+                    nvAdd2.setInt(2,nYear+1);
+                    nvAdd2.setFloat(3, (float) nv.getLuongCoBan());
+                    nvAdd2.setString(4,LayMa(nv));
+                    
+                    System.out.println("LuongNhanVienRuning "+nmonth+"and"+nYear+"maNV "+LayMa(nv));
+                    
+                    n2 = nvAdd2.executeUpdate();
+                    
+                     
+                }
+                      nextYearDone = true;
+                      System.out.println("NextYearDone "+"OK");
+                }
+                else{
+                     for(int i = 0 ; i < (13-nmonth);i++){
+                
+               nvAdd2 = con.prepareStatement("INSERT INTO LuongNhanVien ([THANG],[NAM],[LUONG],[MANV]" +
+                    ") VALUES(?,?,?,?)");
+                    nvAdd2.setInt(1,nmonth+i);
+                    nvAdd2.setInt(2,nYear);
+                    nvAdd2.setFloat(3, (float) nv.getLuongCoBan());
+                    nvAdd2.setString(4,LayMa(nv));
+                    
+                    System.out.println("LuongNhanVienRuning "+nmonth+"and"+nYear+"maNV "+LayMa(nv));
+                    
+                    n2 = nvAdd2.executeUpdate();
+                    
+                     
+                }
+                     
+                }
+                
+                
+                if(n2>=(13-nmonth)){
+                                //nvAdd2.close(); 
+                                return true;
+                             }
+            }
+
+                       
+            
+           
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    
+    
+    
     public boolean deleteNV(String maNV) {
         try {
             PreparedStatement stmt = con.prepareStatement("delete from NhanVien where MANV = ?");
@@ -133,6 +238,41 @@ public class NhanVienHanhChinh_Dao {
         }
         return nv;
     }
+    
+     public NhanVienHanhChinh TimKiemMaThangNam(String ma,String thang,String nam){
+        NhanVienHanhChinh nv = null;
+        try{
+            PreparedStatement stmt = con.prepareStatement("select * from NHANVIEN where MANV = ?"+"");
+            stmt.setString(1,ma);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                nv =new NhanVienHanhChinh(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getDate(4),
+                        rs.getString(5),rs.getDouble(6),rs.getString(7),rs.getString(8), rs.getDouble(9));
+
+                nv.setHeSoLuong(heSoLuong_dao.TimKiemMa(rs.getString(10)));
+                nv.setPhongban(phongBan_dao.TimKiemMa(rs.getString(11)));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return nv;
+    }
+    
+     public String LayMa(NhanVienHanhChinh nv){
+         String Ma="";
+        try{
+            PreparedStatement stmt = con.prepareStatement("select MANV from NHANVIEN where CMND = ?");
+            stmt.setInt(1,nv.getCmnd());
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+               Ma = rs.getString(1);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return Ma;
+    }
+    
     public NhanVienHanhChinh TimKiemTen(String ten){
         NhanVienHanhChinh nv = null;
         try{
